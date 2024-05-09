@@ -25,17 +25,6 @@ OriginalDesktop.Desktop {
         acceptedButtons: Qt.NoButton
     }
 
-    Action {
-        text: "Open Browser"
-        onTriggered: {
-            console.log("Open browser");
-            browserBuilder.createObject(desktop);
-        }
-        property var browserBuilder: Component {
-            Browser{}
-        }
-    }
-
     onHeightChanged: {
         if (height > 100) {
             adjustToolbarPosition();
@@ -92,26 +81,6 @@ OriginalDesktop.Desktop {
         return map;
     })({});
 
-    Component.onCompleted: {
-        webEngineConfig.setupWebEngineSettings();
-    }
-
-    // Accept a download through the webview
-    property alias webViewProfileSetup: webEngineConfig.webViewProfileSetup
-    property alias currentUrl: webEngineConfig.currentUrl
-    property alias downloadUrl: webEngineConfig.downloadUrl
-    property alias adaptedPath: webEngineConfig.adaptedPath
-    property alias tempDir: webEngineConfig.tempDir
-    property var initWebviewProfileHandlers: webEngineConfig.initWebviewProfileHandlers
-    property bool autoAdd: false
-
-    DesktopWebEngine {
-        id: webEngineConfig
-    }
-
-    function setAutoAdd(auto) {
-        autoAdd = auto;
-    }
 
     // Create or fetch a toolbar with the given name
     function getToolbar(name) {
