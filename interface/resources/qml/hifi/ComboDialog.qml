@@ -8,6 +8,7 @@
 //  Distributed under the Apache License, Version 2.0.
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 //
+// TODO: Only used by Pal.qml app (People). Remove this after rewriting Pal
 
 import QtQuick 2.5
 import stylesUit 1.0
