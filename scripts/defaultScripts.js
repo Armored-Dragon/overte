@@ -14,7 +14,6 @@
 //
 
 var DEFAULT_SCRIPTS_COMBINED = [
-    "system/request-service.js",
     "system/progress.js",
     "system/away.js",
     "system/audio.js",
@@ -38,7 +37,7 @@ var DEFAULT_SCRIPTS_COMBINED = [
     "system/keyboardShortcuts/keyboardShortcuts.js",
     "system/onEscape.js",
     "system/onFirstRun.js",
-    "system/places/places.js"
+    "system/places/places.js",
     //"developer/debugging/scriptMemoryReport.js"
 ];
 var DEFAULT_SCRIPTS_SEPARATE = [

@@ -40,10 +40,10 @@ function loadSeparateDefaults() {
 
 
 var DEFAULT_SCRIPTS_COMBINED = [
-    "system/request-service.js",
-    "system/progress.js",
-    "system/away.js"
+	"system/progress.js", 
+	"system/away.js"
 ];
+
 function runDefaultsTogether() {
     for (var i = 0; i < DEFAULT_SCRIPTS_COMBINED.length; i++) {
         var shouldIncludeCurrentDefaultScript = true;
