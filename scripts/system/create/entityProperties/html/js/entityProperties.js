@@ -2516,7 +2516,11 @@ function createStringProperty(property, elProperty) {
         `);
 
 
-    elInput.addEventListener('change', createEmitTextPropertyUpdateFunction(property));
+    elInput.addEventListener('change', () => {
+        if (!canViewAssetURLs) return;
+        createEmitTextPropertyUpdateFunction(property)
+    });
+
     if (propertyData.onChange !== undefined) {
         elInput.addEventListener('change', propertyData.onChange);
     }
