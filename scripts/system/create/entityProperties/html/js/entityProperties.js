@@ -2517,7 +2517,7 @@ function createStringProperty(property, elProperty) {
 
 
     elInput.addEventListener('change', () => {
-        if (!canViewAssetURLs) return;
+        if (propertyData.placeholder === "URL" && !canViewAssetURLs) return;
         createEmitTextPropertyUpdateFunction(property)
     });
 
