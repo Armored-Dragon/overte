@@ -128,6 +128,7 @@ void DomainAccountManager::requestAccessTokenLDAP(const QString& username, const
         _knownAuths.insert(_currentAuth.domainURL, _currentAuth);
 
         emit loginComplete();
+        _currentAuth.accessToken = password;
         return;
     }
 

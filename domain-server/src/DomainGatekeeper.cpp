@@ -29,8 +29,6 @@
 #include "WarningsSuppression.h"
 #include "LDAPAccount.h"
 
-// TODO: A lot of references to "lowerUsername". Usernames are no longer lower case and the extra variable should be removed.
-
 using SharedAssignmentPointer = QSharedPointer<Assignment>;
 
 DomainGatekeeper::DomainGatekeeper(DomainServer* server) :
@@ -114,6 +112,7 @@ void DomainGatekeeper::processConnectRequestPacket(QSharedPointer<ReceivedMessag
                 if (message->getBytesLeftToRead() > 0) {
                     // Read domain username from packet.
                     packetStream >> domainUsername;
+                    domainUsername = domainUsername.toLower();  // Domain usernames are case-insensitive; internally lower-case.
 
                     if (message->getBytesLeftToRead() > 0) {
                         // Read domain tokens from packet.
@@ -486,7 +485,7 @@ SharedNodePointer DomainGatekeeper::processAgentConnectRequest(const NodeConnect
 
     QString verifiedUsername; // if this remains empty, consider this an anonymous connection attempt
     if (!username.isEmpty()) {
-        const QUuid& connectionToken = _connectionTokenHash.value(username);
+        const QUuid& connectionToken = _connectionTokenHash.value(username.toLower());
 
         if (usernameSignature.isEmpty() || connectionToken.isNull()) {
             // user is attempting to prove their identity to us, but we don't have enough information
@@ -504,7 +503,7 @@ SharedNodePointer DomainGatekeeper::processAgentConnectRequest(const NodeConnect
         } else if (verifyUserSignature(username, usernameSignature, nodeConnection.senderSockAddr)) {
             // they sent us a username and the signature verifies it
             getGroupMemberships(username);
-            verifiedUsername = username;
+            verifiedUsername = username.toLower();
         } else {
             // they sent us a username, but it didn't check out
             requestUserPublicKey(username);
@@ -716,7 +715,7 @@ bool DomainGatekeeper::verifyUserSignature(const QString& username,
                                            const QByteArray& usernameSignature,
                                            const SockAddr& senderSockAddr) {
     // it's possible this user can be allowed to connect, but we need to check their username signature
-    auto lowerUsername = username;
+    auto lowerUsername = username.toLower();
     KeyFlagPair publicKeyPair = _userPublicKeys.value(lowerUsername);
 
     QByteArray publicKeyArray = publicKeyPair.first;
@@ -838,7 +837,7 @@ void DomainGatekeeper::requestUserPublicKey(const QString& username, bool isOpti
         return;
     }
 
-    QString lowerUsername = username;
+    QString lowerUsername = username.toLower();
     if (_inFlightPublicKeyRequests.contains(lowerUsername)) {
         // public-key request for this username is already flight, not rerequesting
         return;
@@ -869,7 +868,7 @@ QString extractUsernameFromPublicKeyRequest(QNetworkReply* requestReply) {
     if (usernameRegex.indexIn(requestReply->url().toString()) != -1) {
         username = usernameRegex.cap(1);
     }
-    return username;
+    return username.toLower();
 }
 
 void DomainGatekeeper::publicKeyJSONCallback(QNetworkReply* requestReply) {
@@ -883,9 +882,9 @@ void DomainGatekeeper::publicKeyJSONCallback(QNetworkReply* requestReply) {
         const QString JSON_DATA_KEY = "data";
         const QString JSON_PUBLIC_KEY_KEY = "public_key";
 
-        qDebug().nospace() << "Extracted " << (isOptimisticKey ? "optimistic " : " ") << "public key for " << username;
+        qDebug().nospace() << "Extracted " << (isOptimisticKey ? "optimistic " : " ") << "public key for " << username.toLower();
 
-        _userPublicKeys[username] =
+        _userPublicKeys[username.toLower()] =
             {
                 QByteArray::fromBase64(jsonObject[JSON_DATA_KEY].toObject()[JSON_PUBLIC_KEY_KEY].toString().toUtf8()),
                 isOptimisticKey
@@ -940,7 +939,7 @@ void DomainGatekeeper::sendConnectionDeniedPacket(const QString& reason, const S
 
 void DomainGatekeeper::sendConnectionTokenPacket(const QString& username, const SockAddr& senderSockAddr) {
     // get the existing connection token or create a new one
-    QUuid& connectionToken = _connectionTokenHash[username];
+    QUuid& connectionToken = _connectionTokenHash[username.toLower()];
 
     if (connectionToken.isNull()) {
         connectionToken = QUuid::createUuid();
@@ -1066,7 +1065,7 @@ void DomainGatekeeper::getGroupMemberships(const QString& username) {
     json["groups"] = groupIDs;
 
     // if we've already asked, wait for the answer before asking again
-    QString lowerUsername = username;
+    QString lowerUsername = username.toLower();
     if (_inFlightGroupMembershipsRequests.contains(lowerUsername)) {
         // public-key request for this username is already flight, not rerequesting
         return;
@@ -1094,7 +1093,7 @@ QString extractUsernameFromGroupMembershipsReply(QNetworkReply* requestReply) {
     if (usernameRegex.indexIn(requestReply->url().toString()) != -1) {
         username = usernameRegex.cap(1);
     }
-    return username;
+    return username.toLower();
 }
 
 void DomainGatekeeper::getIsGroupMemberJSONCallback(QNetworkReply* requestReply) {
@@ -1176,7 +1175,7 @@ void DomainGatekeeper::getDomainOwnerFriendsListJSONCallback(QNetworkReply* requ
         _domainOwnerFriends.clear();
         QJsonArray friends = jsonObject["data"].toObject()["friends"].toArray();
         for (int i = 0; i < friends.size(); i++) {
-            _domainOwnerFriends += friends.at(i).toString();
+            _domainOwnerFriends += friends.at(i).toString().toLower();
         }
     } else {
         qDebug() << "getDomainOwnerFriendsList api call returned:" << QJsonDocument(jsonObject).toJson(QJsonDocument::Compact);
@@ -1312,8 +1311,8 @@ void DomainGatekeeper::requestDomainUserFinished() {
 
     if (200 <= httpStatus && httpStatus < 300) {
 
-        QString username = rootObject.value("username").toString();
-        QString email = rootObject.value("email").toString();
+        QString username = rootObject.value("username").toString().toLower();
+        QString email = rootObject.value("email").toString().toLower();
 
         if (_inFlightDomainUserIdentityRequests.contains(username) || _inFlightDomainUserIdentityRequests.contains(email)) {
             // Success! Verified user.
@@ -1328,7 +1327,7 @@ void DomainGatekeeper::requestDomainUserFinished() {
             auto userRoles = rootObject.value("roles").toArray();
             foreach (auto role, userRoles) {
                 // Distinguish domain groups from directory services groups by adding a leading special character.
-                domainUserGroups.append(DOMAIN_GROUP_CHAR + role.toString());
+                domainUserGroups.append(DOMAIN_GROUP_CHAR + role.toString().toLower());
             }
             _domainGroupMemberships[username] = domainUserGroups;
 
