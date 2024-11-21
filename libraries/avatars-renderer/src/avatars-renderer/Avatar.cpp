@@ -978,7 +978,7 @@ Transform Avatar::calculateDisplayNameTransform(const ViewFrustum& view, const g
 void Avatar::renderDisplayName(gpu::Batch& batch, const ViewFrustum& view, const glm::vec3& textPosition, bool forward) const {
     PROFILE_RANGE_BATCH(batch, __FUNCTION__);
 
-    bool shouldShowReceiveStats = showReceiveStats;// && !isMyAvatar();
+    bool shouldShowReceiveStats = showReceiveStats && !isMyAvatar();
 
     // If we have nothing to draw, or it's totally transparent, or it's too close or behind the camera, return
     static const float CLIP_DISTANCE = 0.2f;
