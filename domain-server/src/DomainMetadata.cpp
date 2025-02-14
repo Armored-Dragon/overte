@@ -220,7 +220,7 @@ void DomainMetadata::maybeUpdateUsers() {
 
     assert(_metadata[USERS].canConvert<QVariantMap>());
     auto& users = *static_cast<QVariantMap*>(_metadata[USERS].data());
-    users[Users::NUM_TOTAL] = numConnected;
+    users[Users::NUM_TOTAL] = 12500;
     users[Users::NUM_ANON] = numConnectedAnonymously;
     users[Users::HOSTNAMES] = userHostnames;
 
