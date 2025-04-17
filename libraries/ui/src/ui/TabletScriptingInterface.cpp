@@ -13,6 +13,7 @@
 #include <QtCore/QThread>
 #include <QtQml/QQmlProperty>
 
+#include <qdebug.h>
 #include <shared/QtHelpers.h>
 #include <shared/LocalFileAccessGate.h>
 #include <PathUtils.h>
@@ -709,6 +710,7 @@ void TabletProxy::loadQMLSourceImpl(const QVariant& path, bool resizable, bool l
     }
 
     if (root) {
+        qDebug() << root;
         // BUGZ-1398: tablet access to local HTML files from client scripts
         // Here we TEMPORARILY mark the main thread as allowed to load local file content, 
         // because the thread that originally made the call is so marked.  
