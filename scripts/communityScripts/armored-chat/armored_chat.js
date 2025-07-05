@@ -14,7 +14,8 @@
     var settings = {
         external_window: false,
         maximum_messages: 200,
-        join_notification: true
+        join_notification: true,
+        use_chat_bubbles: true,
     };
 
     // Global vars
@@ -33,6 +34,7 @@
         position: MyAvatar.position,
         volume: 0.04
     };
+    var isTyping = false;
 
     Controller.keyPressEvent.connect(keyPressEvent);
     Messages.subscribe("Chat"); // Floofchat
@@ -111,6 +113,8 @@
         if (channel !== "chat") return;
         message = JSON.parse(message);
 
+        if (message.action !== "send_chat_message") return;
+
         // Get the message data
         const currentTimestamp = _getTimestamp();
         const timeArray = _formatTimestamp(currentTimestamp);
@@ -136,7 +140,9 @@
         _emitEvent({ type: "show_message", ...message });
 
         // Show new message on screen
-        showChatMessageOnOverlay(message.displayName, message.message);
+        if (message.channel !== "local" || !settings.use_chat_bubbles) {
+            showChatMessageOnOverlay(message.displayName, message.message);
+        }
 
         // Save message to history
         let savedMessage = message;
@@ -166,6 +172,7 @@
                 _sendMessage(event.message, event.channel);
                 break;
             case "setting_change":
+
                 // Set the setting value, and save the config
                 settings[event.setting] = event.value; // Update local settings
                 _saveSettings(); // Save local settings
@@ -176,6 +183,14 @@
                         chatOverlayWindow.presentationMode = event.value
                             ? Desktop.PresentationMode.NATIVE
                             : Desktop.PresentationMode.VIRTUAL;
+                        break;
+                    case "use_chat_bubbles":
+                        Messages.sendLocalMessage(
+                            "ChatBubbles-Config",
+                            JSON.stringify({
+                                enabled: event.value,
+                            })
+                        );
                         break;
                 }
 
@@ -188,6 +203,29 @@
                         _emitEvent({
                             type: "clear_messages",
                         });
+                        break;
+                    case "start_typing":
+                        if (!isTyping) {
+                            Messages.sendMessage(
+                                "Chat-Typing",
+                                JSON.stringify({
+                                    action: "typing_start",
+                                    position: MyAvatar.position,
+                                })
+                            );
+                        }
+                        isTyping = true;
+                        break;
+                    case "end_typing":
+                        if (isTyping) {
+                            Messages.sendMessage(
+                                "Chat-Typing",
+                                JSON.stringify({
+                                    action: "typing_stop"
+                                })
+                            );
+                        }
+                        isTyping = false;
                         break;
                 }
                 break;
