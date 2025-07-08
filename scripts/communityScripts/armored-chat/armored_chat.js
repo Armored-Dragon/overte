@@ -336,7 +336,6 @@
     function showChatMessageOnOverlay(author, message) {
         if (!author) author = "anonymous";
         Audio.playSound(notificationSound, soundInjectorOptions);
-        console.log("Hai")
         notificationOverlay.sendToQml({ type: "message", author, message });
     }
 
