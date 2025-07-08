@@ -29,11 +29,6 @@
     var palData = AvatarManager.getPalData().data;
     var notificationOverlay = null;
     var notificationSound = SoundCache.getSound(Script.resolvePath("sound/click.wav"));
-    var soundInjectorOptions = {
-        localOnly: true,
-        position: MyAvatar.position,
-        volume: 0.04
-    };
     var isTyping = false;
 
     Controller.keyPressEvent.connect(keyPressEvent);
@@ -335,7 +330,7 @@
     }
     function showChatMessageOnOverlay(author, message) {
         if (!author) author = "anonymous";
-        Audio.playSound(notificationSound, soundInjectorOptions);
+        Audio.playSystemSound(notificationSound);
         notificationOverlay.sendToQml({ type: "message", author, message });
     }
 
