@@ -269,7 +269,7 @@ Item {
             radius: 5;
 
             ColumnLayout {
-                width: parent.width - 10;
+                width: parent.width - 15;
                 height: notificationDetailsDetails.text == "" ? children[0].contentHeight + 10 : children[0].contentHeight + children[1].height + 10;
                 anchors.centerIn: parent;
                 spacing: 5;
