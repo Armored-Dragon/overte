@@ -34,7 +34,7 @@ Item {
         Rectangle {
             width: 300;
             height: 330;
-            color: Qt.rgba(0,0,0,0.8);
+            color: Qt.rgba(0,0,0,0.95);
             radius: 5;
             visible: announcementHistoryVisible;
 
@@ -113,8 +113,7 @@ Item {
                             delegate: Rectangle {
                                 width: parent && parent.width || 0;
                                 height: 50;
-                                color: Qt.rgba(0,0,0,0.8);
-                                opacity: 0.9;
+                                color: Qt.rgba(0,0,0,0.95);
                                 radius: 5;
 
                                 RowLayout {
@@ -149,13 +148,11 @@ Item {
                                     }
 
                                     onEntered: {
-                                        parent.color = Qt.rgba(0,0,0,0.9);
-                                        parent.opacity = 1;
+                                        parent.color = Qt.rgba(0,0,0,1);
                                     }
 
                                     onExited: {
-                                        parent.color = Qt.rgba(0,0,0,0.8);
-                                        parent.opacity = 0.9;
+                                        parent.color = Qt.rgba(0,0,0,0.95);
                                     }
                                 }
 
@@ -195,8 +192,7 @@ Item {
         Rectangle {
             width: 300;
             height: 50;
-            color: Qt.rgba(0,0,0,0.8);
-            opacity: 0.9;
+            color: Qt.rgba(0,0,0,0.95);
             radius: 5;
             visible: !announcementHistoryVisible && previewNotificationActive;
 
@@ -233,13 +229,11 @@ Item {
                 }
 
                 onEntered: {
-                    parent.color = Qt.rgba(0,0,0,0.9);
-                    parent.opacity = 1;
+                    parent.color = Qt.rgba(0,0,0,1);
                 }
 
                 onExited: {
-                    parent.color = Qt.rgba(0,0,0,0.8);
-                    parent.opacity = 0.9;
+                    parent.color = Qt.rgba(0,0,0,0.95);
                 }
             }
 
@@ -269,7 +263,7 @@ Item {
         Rectangle {
             width: 300;
             height: children[0].height + 10;
-            color: Qt.rgba(0,0,0,0.9);
+            color: Qt.rgba(0,0,0,0.95);
             visible: notificationDetailsActive;
             radius: 5;
 
@@ -322,7 +316,7 @@ Item {
 
         // Bell Icon and container
         Rectangle {
-            color: Qt.rgba(0,0,0,0.8);
+            color: Qt.rgba(0,0,0,0.95);
             width: 40;
             height: 40;
             radius: 5;
@@ -335,15 +329,8 @@ Item {
                 sourceSize.height: 128;
                 fillMode: Image.PreserveAspectFit;
                 anchors.centerIn: parent;
-                opacity: 0.9;
                 id: notificationIcon;
 
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 100;
-                        easing.type: Easing.InOutCubic;
-                    }
-                }
                 SequentialAnimation {
                     id: shakeAnimation
                     NumberAnimation { target: notificationIcon; property: "rotation"; to: 20; duration: 200}
@@ -364,13 +351,11 @@ Item {
                 }
 
                 onEntered: {
-                    parent.color = Qt.rgba(0,0,0,0.95);
-                    parent.children[0].opacity = 1;
+                    parent.color = Qt.rgba(0,0,0,1);
                 }
 
                 onExited: {
-                    parent.color = Qt.rgba(0,0,0,0.8);
-                    parent.children[0].opacity = 0.9;
+                    parent.color = Qt.rgba(0,0,0,0.95);
                 }
             }
 
@@ -428,10 +413,10 @@ Item {
             }
 
             // Visual effects.
-            shakeAnimation.start();
+            // shakeAnimation.start();
             if (announcementHistoryVisible === false) {
                 hasUnread = true;
-                shakeAnimationTimer.running = true;
+                // shakeAnimationTimer.running = true;
             }
         }
 	}
