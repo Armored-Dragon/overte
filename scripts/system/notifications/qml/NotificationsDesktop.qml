@@ -269,7 +269,7 @@ Item {
 
             ColumnLayout {
                 width: parent.width - 10;
-                height: children[0].contentHeight + children[1].height + 10;
+                height: notificationDetailsDetails.text == "" ? children[0].contentHeight + 10 : children[0].contentHeight + children[1].height + 10;
                 anchors.centerIn: parent;
                 spacing: 5;
                 
@@ -290,6 +290,7 @@ Item {
                     x: 5;
                     radius: 5;
                     height: children[0].contentHeight;
+                    visible: children[0].text != "";
 
                     Text {
                         id: notificationDetailsDetails;
@@ -302,7 +303,6 @@ Item {
                     }
                 }
             }
-
 
             MouseArea {
                 anchors.fill: parent;
