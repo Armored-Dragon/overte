@@ -116,7 +116,6 @@ function update() {
 }
 
 function sendMessageToQML(message) {
-	util.debugLog(`Sending message to qml: ${JSON.stringify(message)}`);
 	if (app._ui.overlay) app._ui.overlay.sendToQml(message);
 	if (app._ui.overlayVR) Entities.emitScriptEvent(app._ui.overlayVR, message);
 }

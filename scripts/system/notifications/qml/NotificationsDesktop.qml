@@ -432,7 +432,6 @@ Item {
 
     // Messages from script
     function fromScript(message) {
-		print(JSON.stringify(message));
         switch (message.type){
             case "addSystemNotification":
 				addSystemNotification(message.message, message.details);
