@@ -44,49 +44,77 @@ Item {
                 spacing: 2;
 
                 Item {
-                    height: 30;
+                    height: 35;
                     width: parent.width;
 
-                    Row {
+                    RowLayout {
                         width: parent.width;
                         height: parent.height;
 
-                        Switch { 
+                        Row {
                             height: 20;
-                            id: doNotDisturbSwitch;
 
-                            indicator: Rectangle {
-                                implicitWidth: 48;
-                                implicitHeight: 20;
-                                x: doNotDisturbSwitch.leftPadding;
-                                y: parent.height / 2 - height / 2 + 5;
-                                radius: 13;
-                                color: doNotDisturbSwitch.checked ? "#17a81a" : "#ffffff";
-                                border.color: doNotDisturbSwitch.checked ? "#17a81a" : "#cccccc";
+                            Switch { 
+                                height: 20;
+                                id: doNotDisturbSwitch;
 
-                                Rectangle {
-                                    x: doNotDisturbSwitch.checked ? parent.width - width : 0;
-                                    width: 20;
-                                    height: 20;
+                                indicator: Rectangle {
+                                    implicitWidth: 48;
+                                    implicitHeight: 20;
+                                    x: doNotDisturbSwitch.leftPadding;
+                                    y: parent.height / 2 - height / 2 + 5;
                                     radius: 13;
-                                    color: doNotDisturbSwitch.down ? "#cccccc" : "#ffffff";
-                                    border.color: doNotDisturbSwitch.checked ? (doNotDisturbSwitch.down ? "#17a81a" : "#21be2b") : "#999999";
+                                    color: doNotDisturbSwitch.checked ? "#17a81a" : "#ffffff";
+                                    border.color: doNotDisturbSwitch.checked ? "#17a81a" : "#cccccc";
+
+                                    Rectangle {
+                                        x: doNotDisturbSwitch.checked ? parent.width - width : 0;
+                                        width: 20;
+                                        height: 20;
+                                        radius: 13;
+                                        color: doNotDisturbSwitch.down ? "#cccccc" : "#ffffff";
+                                        border.color: doNotDisturbSwitch.checked ? (doNotDisturbSwitch.down ? "#17a81a" : "#21be2b") : "#999999";
+                                    }
+                                }
+
+                                onClicked: {
+                                    doNotDisturb = checked;
+                                    toScript({type: "doNotDisturbState", state: doNotDisturb});
                                 }
                             }
 
-                            onClicked: {
-                                doNotDisturb = checked;
-                                toScript({type: "doNotDisturbState", state: doNotDisturb});
+                            Text {
+                                color: "White";
+                                font.pixelSize: 18;
+                                text: "Do not disturb";
+                                font.weight: Font.Medium;
+                                anchors.verticalCenter: parent.verticalCenter;
                             }
                         }
 
-                        Text {
-                            color: "White";
-                            font.pixelSize: 18;
-                            width: 10;
-                            text: "Do not disturb";
-                            font.weight: Font.Medium;
-                            anchors.verticalCenter: parent.verticalCenter;
+                        Row {
+                            Layout.fillHeight: true;
+                            width: 20;
+
+                            Image {
+                                source: "../img/delete.svg";
+                                height: 20;
+                                width: 20;
+                                sourceSize.width: 128;
+                                sourceSize.height: 128;
+                                fillMode: Image.PreserveAspectFit;
+                                anchors.centerIn: parent;
+
+                                MouseArea {
+                                    anchors.fill: parent;
+                                    hoverEnabled: true;
+                                    propagateComposedEvents: true;	
+
+                                    onClicked: {
+                                        notifications.clear();
+                                    }
+                                }
+                            }
                         }
                     }
 
