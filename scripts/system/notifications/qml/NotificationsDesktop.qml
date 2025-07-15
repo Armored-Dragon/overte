@@ -86,6 +86,7 @@ Item {
                             width: 10;
                             text: "Do not disturb";
                             font.weight: Font.Medium;
+                            anchors.verticalCenter: parent.verticalCenter;
                         }
                     }
 
