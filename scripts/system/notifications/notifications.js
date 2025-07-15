@@ -49,7 +49,7 @@ let app = {
 	}
 }
 
-io.getNotifications();
+// io.getNotifications();
 changeOverlayBasedOnViewMode();
 
 function changeOverlayBasedOnViewMode() {
@@ -71,7 +71,7 @@ function changeOverlayBasedOnViewMode() {
 const notification = {
 	system: (message = "No title", details = "", sound = false) => {
 		// Save the notification
-		io.saveNotification({ message, details, type: `system`, id: Uuid.generate(), timestamp: Date.now() });
+		// io.saveNotification({ message, details, type: `system`, id: Uuid.generate(), timestamp: Date.now() });
 
 		// Tell QML to render the announcement
 		sendMessageToQML({ type: "addSystemNotification", message, details });
