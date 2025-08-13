@@ -30,7 +30,6 @@
     var isTyping = false;
 
     Controller.keyPressEvent.connect(keyPressEvent);
-    Messages.subscribe("Chat"); // Floofchat
     Messages.subscribe("chat");
     Messages.messageReceived.connect(receivedMessage);
     AvatarManager.avatarAddedEvent.connect((sessionId) => {
@@ -108,11 +107,6 @@
         const timeArray = _formatTimestamp(currentTimestamp);
 
         if (!message.channel) message.channel = "domain"; // We don't know where to put this message. Assume it is a domain wide message.
-        if (message.forApp) return; // Floofchat
-
-        // Floofchat compatibility hook
-        message = floofChatCompatibilityConversion(message);
-        message.channel = message.channel.toLowerCase();
 
         // Check the channel. If the channel is not one we have, do nothing.
         if (!CHANNELS.includes(message.channel)) return;
@@ -254,8 +248,6 @@
                 action: "sendChatMessage",
             })
         );
-
-        floofChatCompatibilitySendMessage(message, channel);
     }
     function _avatarAction(type, sessionId) {
         Script.setTimeout(() => {
@@ -341,35 +333,5 @@
      */
     function _emitEvent(packet = { type: "" }) {
         chatOverlayWindow.sendToQml(packet);
-    }
-
-    //
-    // Floofchat compatibility functions
-    // Added to ease the transition between Floofchat to ArmoredChat
-    // These functions can be safely removed at a much later date.
-    function floofChatCompatibilityConversion(message) {
-        if (message.type === "TransmitChatMessage" && !message.forApp) {
-            return {
-                position: message.position,
-                message: message.message,
-                displayName: message.displayName,
-                channel: message.channel.toLowerCase(),
-            };
-        }
-        return message;
-    }
-
-    function floofChatCompatibilitySendMessage(message, channel) {
-        Messages.sendMessage(
-            "Chat",
-            JSON.stringify({
-                position: MyAvatar.position,
-                message: message,
-                displayName: MyAvatar.sessionDisplayName,
-                channel: channel.charAt(0).toUpperCase() + channel.slice(1),
-                type: "TransmitChatMessage",
-                forApp: "Floof",
-            })
-        );
     }
 })();
